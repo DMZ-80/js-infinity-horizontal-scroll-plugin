@@ -1,0 +1,136 @@
+@charset "utf-8";
+@use "sass:map";
+@import url("https://cdn.jsdelivr.net/npm/destyle.css@1.0.15/destyle.css");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+JP:wght@100..900&display=swap");
+/*
+font-family: "Noto Sans JP", sans-serif;
+font-family: "Montserrat", sans-serif;
+*/
+
+$breakpoints: (
+  mmxxs: 'max-width: 375px',
+  mmxs: 'max-width: 480px',
+  mms: 'max-width: 568px',
+  mm: 'max-width: 820px',
+  mml: 'max-width: 1024px',
+  mmxl: 'max-width: 1180px',
+  mmxxl: 'max-width: 1366px',
+  pcs: 'max-width: 1400px',
+  pc: 'max-width: 1600px',
+  pc_hover: '(hover: hover) and (pointer: fine)'
+);
+
+@mixin media-breakpoint($breakpoint-name) {
+  // マップからブレークポイントの値を取得
+  $breakpoint-value: map.get($breakpoints, $breakpoint-name);
+
+  // 指定されたブレークポイント名が存在するかチェック
+  @if ($breakpoint-value) {
+    // 取得した値をそのままメディアクエリの条件部分として使う
+    @media only screen and (#{$breakpoint-value}) {
+      @content;
+    }
+  } @else {
+    // 存在しないブレークポイント名が指定された場合はエラー
+    @error "`#{$breakpoint-name}` というブレークポイントは `$breakpoints` マップに存在しません。";
+  }
+}
+
+body {
+  color: #333;
+  font-family: "Noto Sans JP", sans-serif;
+
+  background-color: #f1f1f1;
+}
+
+main {
+  align-items: center;
+  display: flex;
+  flex-flow: column;
+  min-height: 100svh;
+  justify-content: center;
+  width: 100%;
+}
+
+
+section {
+  margin: 0 0 60px;
+
+  h1 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.4;
+    text-align: center;
+
+    margin: 0 0 30px;
+    padding: 0 4vw;
+  }
+
+  p {
+    line-height: 1.6;
+    text-align: center;
+
+    margin: 10px 0 0;
+    padding: 0 8vw;
+  }
+
+  @media (max-width: 768px) {
+    
+    h1 {
+      font-size: 28px;
+    }
+  }
+}
+
+
+
+.loop--01 {
+  $gap: 0.5vw;
+
+  overflow: hidden;
+  width: 100%;
+
+  .loop-contents {
+    background-color: #fff;
+    display: flex;
+    height: 30vw;
+    overflow: hidden;
+    width: 100vw;
+    
+    @include media-breakpoint(mm) {
+      height: 60vw;
+      width: 200vw;
+    }
+
+    .loop-item {
+      align-items: stretch;
+      display: flex;
+      flex-shrink: 0 !important;
+      gap: $gap;
+      padding: calc(#{$gap} * 2) calc(#{$gap} / 2);
+      width: calc(100% - #{$gap}) !important;
+
+      .loop-image {
+        width: 100%;
+        
+        &.loop-row2 {
+          display: flex;
+          flex-flow: column;
+          gap: $gap;
+
+          img {
+            height: calc(50% - #{$gap} / 2);
+          }
+        }
+        
+        img {
+          border-radius: 6px;
+          object-fit: cover;
+          height: 100%;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
