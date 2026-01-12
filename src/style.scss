@@ -85,6 +85,9 @@ section {
 
 
 
+/**
+ * LoopAnimation
+ */
 .loop--01 {
   $gap: 0.5vw;
 
@@ -133,4 +136,37 @@ section {
       }
     }
   }
+}
+
+
+
+/**
+ * FollowButton
+ */
+.follow-button {
+  color: #000;
+  font-weight: 800;
+  
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 9999px;
+  display: flex;
+  height: 45px;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  padding: 0 24px;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  transform: scale(0.8);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  white-space: nowrap;
+  z-index: 9999;
+}
+
+.follow-button.active {
+  opacity: 1;
+  transform: scale(1);
 }

@@ -181,3 +181,100 @@ document.querySelectorAll('.loop--01').loopAnimation({
     }
   }
 });
+
+
+
+/**
+ * 慣性追従アニメーションクラス
+ */
+class FollowButton {
+  constructor(element, options = {}) {
+    this.container = element;
+    this.options = Object.assign({
+      speed: 0.12,           // 慣性の速さ
+      label: 'Click',        // 表示テキスト
+      className: 'follow-button', // チップのクラス
+      offset: { x: 0, y: 0 } // 中心からのズレ (px)
+    }, options);
+
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.currentX = 0;
+    this.currentY = 0;
+    this.isActive = false;
+
+    this.init();
+  }
+
+  init() {
+    // 追従用エレメントの作成
+    this.follower = document.createElement('div');
+    this.follower.className = this.options.className;
+    this.follower.innerText = this.options.label || this.container.getAttribute('data-label') || 'Read More';
+    document.body.appendChild(this.follower);
+
+    // イベントリスナーの登録
+    window.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+    this.container.addEventListener('mouseenter', () => this.activate());
+    this.container.addEventListener('mouseleave', () => this.deactivate());
+
+    // アニメーションループ開始
+    this.animate();
+  }
+
+  handleMouseMove(e) {
+    this.mouseX = e.clientX;
+    this.mouseY = e.clientY;
+  }
+
+  activate() {
+    this.isActive = true;
+    this.follower.classList.add('active');
+  }
+
+  deactivate() {
+    this.isActive = false;
+    this.follower.classList.remove('active');
+  }
+
+  animate() {
+    // イージング計算
+    this.currentX += (this.mouseX - this.currentX) * this.options.speed;
+    this.currentY += (this.mouseY - this.currentY) * this.options.speed;
+
+    // 位置の更新
+    // 中心座標 (rect.width/2) に options.offset 分を加算
+    const rect = this.follower.getBoundingClientRect();
+    const posX = this.currentX - (rect.width / 2) + (this.options.offset.x || 0);
+    const posY = this.currentY - (rect.height / 2) + (this.options.offset.y || 0);
+
+    this.follower.style.left = `${posX}px`;
+    this.follower.style.top = `${posY}px`;
+
+    requestAnimationFrame(() => this.animate());
+  }
+}
+
+/**
+ * プロトタイプ拡張
+ */
+[Element, NodeList, HTMLCollection].forEach((constructor) => {
+  constructor.prototype.followButton = function (options) {
+    if (this instanceof Element) {
+      new FollowButton(this, options);
+    } else {
+      Array.from(this).forEach((el) => {
+        if (el instanceof Element) new FollowButton(el, options);
+      });
+    }
+    return this;
+  };
+});
+
+
+
+document.querySelectorAll('.loop--01').followButton({
+  speed: 0.1,
+  label: 'Drag',
+  offset: { x: 0, y: -20 }
+});
